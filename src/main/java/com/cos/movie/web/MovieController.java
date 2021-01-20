@@ -29,14 +29,14 @@ public class MovieController {
 		this.movieRepository = movieRepository;
 	}
 
-	// http://localhost:8080/movie
+	// http://localhost:8000/movie
 	@GetMapping("/movie")
 	public CommonDto<List<Movie>> findAll() {
 		return new CommonDto<>(HttpStatus.OK.value(), movieRepository.findAll());
 		// MessageConverter (JavaObject -> Json String)
 	}
 
-	// http://localhost:8080/movie/1
+	// http://localhost:8000/movie/1
 	@GetMapping("/movie/{id}")
 	public CommonDto<Movie> findById(@PathVariable int id) {
 		return new CommonDto<>(HttpStatus.OK.value(), movieRepository.findById(id));
@@ -46,22 +46,27 @@ public class MovieController {
 	@PostMapping("/movie")
 	public CommonDto<String> save(@Valid @RequestBody JoinReqDto dto, BindingResult bindingResult) {
 		movieRepository.save(dto);
+		
 		if (dto.getTitle().equals("") || dto.getTitle().equals(null)) {
 			return new CommonDto<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "fail");
-		} // 영화 등록 시 제목 데이터값이 없으면 BODY데이터 실패로 간주
+		} 
+		
 		return new CommonDto<>(HttpStatus.OK.value(), "ok");
 	}
 
-	// http://localhost:8080/movie/1
+	// http://localhost:8000/movie/1
 	@DeleteMapping("/movie/{id}")
 	public CommonDto delete(@PathVariable int id) {
 		movieRepository.delete(id);
+		
 		if (id > 100 || id < 0) {
 			return new CommonDto<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "fail");
-		} // id값이 음수이거나 100이상이면 데이터 실패로 간주
+		}
+		
 		return new CommonDto<>(HttpStatus.OK.value(), "ok");
 	}
 
+	// http://localhost:8000/movie/1
 	@PutMapping("/movie/{id}")
 	public CommonDto update(@PathVariable int id, @Valid @RequestBody UpdateReqDto dto, BindingResult bindingResult) {
 		movieRepository.update(id, dto);
